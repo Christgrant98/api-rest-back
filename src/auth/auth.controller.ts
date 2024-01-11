@@ -19,7 +19,12 @@ export class AuthController {
   }
 
   @Post('login')
-  handleLogin(@Body() loginBody: LoginAuthDto) {
-    return this.authService.login(loginBody);
+  handleLogin2(@Body() loginBody: LoginAuthDto) {
+    console.log('loginBody into controller=', loginBody);
+    try {
+      return this.authService.login(loginBody);
+    } catch (error) {
+      console.error('something went wrong dude', error);
+    }
   }
 }
