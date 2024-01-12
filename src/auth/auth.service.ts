@@ -21,8 +21,7 @@ export class AuthService {
     userObject = { ...userObject, password: plainToHash };
     console.log('userObject', userObject);
     console.log('userObject', userObject.email);
-    const createUser = await this.authModel.create(userObject);
-    if (!createUser) throw new HttpException('USER_ALREADY_REGISTERED', 500);
+    await this.authModel.create(userObject);
     const findUser = await this.authModel.findOne({ email });
     if (!findUser) throw new HttpException('USER_NOT_FOUND', 500);
     const payload = { id: findUser._id, name: findUser.username };
@@ -42,7 +41,9 @@ export class AuthService {
     if (!findUser) throw new HttpException('USER_NOT_FOUND', 404);
 
     const checkPassword = await compare(password, findUser.password);
-    if (!checkPassword) throw new HttpException('PASSWORD_INCORRECT', 403);
+    console.log('checkPassword => ', checkPassword);
+    
+    if (!checkPassword) throw new HttpException('Wrong email or password', 403);
 
     const payload = { id: findUser._id, name: findUser.username };
     const token = this.jwtService.sign(payload);
